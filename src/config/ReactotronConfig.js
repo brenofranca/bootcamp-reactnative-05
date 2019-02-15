@@ -2,7 +2,7 @@ import Reactotron from 'reactotron-react-native';
 import { reactotronRedux } from 'reactotron-redux';
 import sagaPlugin from 'reactotron-redux-saga';
 
-const reactotron = Reactotron.configure({ name: 'React Native App 4' })
+const reactotron = Reactotron.configure({ name: 'React Native App 5' })
   .useReactNative()
   .use(reactotronRedux())
   .use(sagaPlugin())
