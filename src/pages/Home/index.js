@@ -1,47 +1,50 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-
-import {
- Text, View, StatusBar, SafeAreaView 
-} from 'react-native';
+import Mapa from '~/components/Map';
+import ModalRepository from '~/components/ModalRepository';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as FavoritesActions from '~/store/actions/favorites';
-
-import styles from './styles';
+import { Creators as ModalCreators } from '~/store/ducks/modal';
+import { Creators as RepositoriesCreators } from '~/store/ducks/repositories';
 
 class Home extends Component {
   static propTypes = {
-    navigation: PropTypes.shape({
-      navigate: PropTypes.func,
-    }).isRequired,
+    openModal: PropTypes.func.isRequired,
+    addRepositoryCoordinates: PropTypes.func.isRequired,
   };
 
   static navigationOptions = {
     header: null,
   };
 
-  state = {};
+  modalhandle = ({ geometry }) => {
+    const [longitude, latitude] = geometry.coordinates;
+
+    const { openModal, addRepositoryCoordinates } = this.props;
+
+    addRepositoryCoordinates({ longitude, latitude });
+
+    openModal(true);
+  };
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" />
+      <Fragment>
+        <Mapa modalhandle={this.modalhandle} />
 
-        <View style={styles.content}>
-          <Text style={styles.title}>Mapa</Text>
-        </View>
-      </SafeAreaView>
+        <ModalRepository />
+      </Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  favorites: state.favorites,
+  modal: state.modal,
+  repositories: state.repositories,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(FavoritesActions, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ ...ModalCreators, ...RepositoriesCreators }, dispatch);
 
 export default connect(
   mapStateToProps,
